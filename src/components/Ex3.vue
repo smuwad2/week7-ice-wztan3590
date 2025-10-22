@@ -4,18 +4,23 @@
 
         data() {
             return {
-                    posts: []
+                    moods: ['Happy', 'Sad', 'Angry'],
+                    subject: "",
+                    entry: "",
                 }
-            },
+        },
+        methods: {
+            addPost() {
+                axios.get(`${this.baseUrl}/addPost`)
+            }
+        },
         created() { // created is a hook that executes as soon as Vue instance is created
             axios.get('http://localhost:3000/posts')
             .then(response => {
                 this.posts = response.data
-                this.uniqueMoods = [...new Set(this.posts.map(post => post.mood))];
             })
             .catch(error => {
-                this.posts = [];
-                this.uniqueMoods = [];
+                this.posts = [{ entry: 'There was an error: ' + error.message }]
             })
         }
     }
@@ -36,7 +41,7 @@
         <!-- TODO: Build a dropdown list here for selecting the mood -->
         <select id="mood-select">
             <option value="" disabled>Select mood</option>
-            <option v-for="mood in uniqueMoods" :key="mood" :value="mood">{{ mood }}</option>
+            <option v-for="mood in moods">{{ mood }}</option>
         </select>
 
         <br>
