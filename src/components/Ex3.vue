@@ -5,13 +5,30 @@
         data() {
             return {
                     moods: ['Happy', 'Sad', 'Angry'],
-                    subject: "",
-                    entry: "",
+                    subject: '',
+                    entry: '',
+                    selMood: '',
+                    outputMsg: ''
                 }
         },
+        computed: {
+            baseUrl() {
+                
+            }
+        }
         methods: {
             addPost() {
-                axios.get(`${this.baseUrl}/addPost`)
+                axios.get(`${this.baseUrl}/addPost`, {
+                    params: {
+                        subject: this.subject,
+                        entry: this.entry,
+                        mood: this.selMood
+                    }
+                }).then(response=> {
+                    this.outputMsg = response.data.message;
+                }).catch(error=> {
+                    console.log(error);
+                })
             }
         },
         created() { // created is a hook that executes as soon as Vue instance is created
@@ -39,16 +56,22 @@
 
         Mood:
         <!-- TODO: Build a dropdown list here for selecting the mood -->
-        <select id="mood-select">
-            <option value="" disabled>Select mood</option>
+        <select v-model="selMood">
             <option v-for="mood in moods">{{ mood }}</option>
         </select>
 
+        <!-- <select id="mood-select">
+            <option value="" disabled>Select mood</option>
+            <option v-for="mood in moods">{{ mood }}</option>
+        </select> -->
+
         <br>
 
         <br>
-        <button>Submit New Post</button>
+        <button @click="addPost">Submit New Post</button>
 
+        <br></br>
+        {{ outputMsg }}
         <hr> Click  <a><router-link to="/ViewPosts/">here</router-link></a>  to return to Main Page
        
     </div>
